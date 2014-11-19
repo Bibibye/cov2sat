@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 /*
-  Each integer +/- i*k+j represents the variable :
+  Each integer +/- (i-1)*k+j+1 represents the variable :
   is the vertex 'i' the 'j'th vertex of the cover ?
   With 1 <= i <= graph_size
   And  0 <= j < k
