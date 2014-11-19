@@ -25,7 +25,7 @@ static void compute_header(void){
   int nb_edges = 0;
   for(int u = 1; u <= graph_size; ++u)
     for(int v = 1; v <= graph_size; ++v)
-      if(u != v && est_adjacent(u,v))
+      if(u != v && is_adjacent(u,v))
 	++nb_edges;
   nb_edges /= 2;
   int step1 = k;
@@ -105,7 +105,7 @@ static void compute_cnf(void){
   DEBUG("c Step 4 :\n");
   for(int i1 = 1; i1 <= graph_size; ++i1)
     for(int i2 = 1; i2 <= graph_size; ++i2)
-      if(i1 != i2 && est_adjacent(i1, i2)){
+      if(i1 != i2 && is_adjacent(i1, i2)){
         for(int j = 0; j < k; ++j)
           printf("%d %d ", X(i1,j), X(i2,j));
 	printf("0\n");
@@ -124,7 +124,7 @@ static void compute_cnf(void){
 int main(int argc, char **argv){
   if(argc != 2 || (k = atoi(argv[1])) < 1)
     usage(argv[0]);
-  graph_size = nb_sommet();
+  graph_size = nb_vertices();
   compute_header();
   compute_cnf();
   return EXIT_SUCCESS;
