@@ -16,3 +16,9 @@ $ make
 $ ./Petersen.out 6 > P6.sat
 $ minisat P6.sat P6.result
 ```
+
+You can also try the vertex cover solver :
+
+```
+$ ./solver.sh Petersen.out
+```
