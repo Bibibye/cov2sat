@@ -1,7 +1,7 @@
 cov2sat
 =======
 
-cov2sat is a graph coverage problem to SAT reductor.
+cov2sat is a vertex cover problem to SAT reductor.
 A graph must be implemented with 2 functions :
 
  - `int nb_vertices(void)` which returns the number of vertices in the graph.
