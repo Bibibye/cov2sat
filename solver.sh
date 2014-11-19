@@ -12,7 +12,7 @@ let "sat_ok = 0"
 while [ $sat_ok -eq 0 ]
 do
     ./$1 $i > $1.sat
-    minisat $1.sat $1.result > /dev/null
+    minisat $1.sat $1.result > /dev/null 2>&1
     result=`cat $1.result`
     if [ "$result" = "UNSAT" ]
     then

@@ -13,7 +13,7 @@ all: $(OUTFILES)
 	$(CC) $(CFLAGS) $^
 
 run:
-	@for i in $(OUTFILES:%='./%') ; do $$i ; done
+	@for i in $(OUTFILES:%='./%') ; do echo $$i && ./solver.sh $$i ; done
 
 clean:
 	$(RM) *.o
