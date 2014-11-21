@@ -5,7 +5,7 @@
 
 /*
   Each integer +/- (i-1)*k+j+1 represents the variable :
-  is the vertex 'i' the 'j'th vertex of the cover ?
+  "is the vertex 'i' the 'j'th vertex of the cover ?"
   With 1 <= i <= graph_size
   And  0 <= j < k
  */
@@ -33,75 +33,103 @@ static void compute_header(void){
   int step3 = (graph_size * (graph_size - 1)) * k;
   int step4 = nb_edges*2;
   int nb_clauses = step1 + step2 + step3 + step4;
-  DEBUG("c nb_edges : %d\nc 1->%d, 2->%d, 3->%d, 4->%d", nb_edges, step1, step2, step3, step4);
+  DEBUG("c nb_edges : %d\nc 1->%d, 2->%d, 3->%d, 4->%d", 
+	nb_edges, step1, step2, step3, step4);
   DEBUG("c Header :\n");
   printf("p cnf %d %d\n", nb_vars, nb_clauses);
 }
 
-static void compute_cnf(void){
-#ifndef NO_DEBUG
+/*
+  There must be a positive variable for each j :
+     X(1,1) \/ X(2,1) \/ ... \/ X(graph_size,1)
+  /\ X(1,2) \/ X(2,2) \/ ... \/ X(graph_size,2)
+  /\ ...
+  /\ X(1,k) \/ X(2,k) \/ ... \/ X(graph_size,k)
+*/
+static void step1(void){
+  #ifndef NO_DEBUG
   int cpt = 0;
-#endif
-  /*
-    There must be a positive variable for each j.
-   */
+  #endif  
   DEBUG("c Step 1 :\n");
   for(int j = 0; j < k; ++j){
     for(int i = 1; i <= graph_size; ++i){
       printf("%d ", X(i, j));
     }
     printf("0\n");
-#ifndef NO_DEBUG
-      ++cpt;
-#endif
+    #ifndef NO_DEBUG
+    ++cpt;
+    #endif
   }
-  DEBUG("c%d\n", cpt);
-  
-  /*
-    There must be at most one positive variable for each i
-   */
-#ifndef NO_DEBUG
-  cpt = 0;
-#endif
+  DEBUG("c %d\n", cpt); 
+}
+
+/*
+  There must be at most one positive variable for each i :
+     -X(1,1) \/ -X(1,2)
+  /\ -X(1,2) \/ -X(1,3)
+  /\ ...
+  /\ -X(1,k-1) \/ -X(1,k)
+  /\ -X(2,1) \/ -X(2,2)
+  /\ ...
+  /\ -X(graph_size,k-1) \/ -X(graph_size,k)
+*/
+static void step2(void){
+  #ifndef NO_DEBUG
+  int cpt = 0;
+  #endif
   DEBUG("c Step 2 :\n");
   for(int i = 1; i <= graph_size; ++i){
     for(int j1 = 0; j1 < k; ++j1)
       for(int j2 = 0; j2 < k; ++j2)
 	if(j1 != j2){
     	  printf("%d %d 0\n", -X(i,j1), -X(i,j2));
-#ifndef NO_DEBUG
+          #ifndef NO_DEBUG
 	  ++cpt;
-#endif
+          #endif
         }
   }
-  DEBUG("c%d\n", cpt);
-  
-  /*
-    There must be at most one positive variable for each j
-   */
-#ifndef NO_DEBUG
-  cpt = 0;
-#endif
+  DEBUG("c %d\n", cpt);
+}
+
+/*
+  There must be at most one positive variable for each j :
+     -X(1,1) \/ -X(2,1)
+  /\ -X(2,1) \/ -X(3,1)
+  /\ ...
+  /\ -X(k-1,1) \/ -X(k,1)
+  /\ -X(1,2) \/ -X(2,2)
+  /\ ...
+  /\ -X(graph_size-1,k) \/ -X(graph_size,k)    
+*/
+static void step3(void){
+  #ifndef NO_DEBUG
+  int cpt = 0;
+  #endif
   DEBUG("c Step 3 :\n");
   for(int j = 0; j < k; ++j){
     for(int i1 = 1; i1 <= graph_size; ++i1)
       for(int i2 = 1; i2 <= graph_size; ++i2)
 	if(i1 != i2){
 	  printf("%d %d 0\n", -X(i1,j), -X(i2,j));
-#ifndef NO_DEBUG
+          #ifndef NO_DEBUG
 	  ++cpt;
-#endif
+          #endif
 	}
   }
-  DEBUG("c%d\n", cpt);
-  
-  /*
-    For each couple (XA, XB), if XA and XB are adjacent,
-    then there must be one X(A|B, j) positive.
-   */
-#ifndef NO_DEBUG
-  cpt = 0;
-#endif
+  DEBUG("c %d\n", cpt);
+}
+
+/*
+  For each couple (XA, XB), if XA and XB are adjacent,
+  then there must be one X(A|B, j) positive :
+     X(A,1) \/ X(B,1) \/ X(A,2) \/ X(B,2) \/ ... \/ X(A,k) \/ X(B,k)
+  /\ X(A',1) \/ X(B',1) \/ ...
+  /\ ...
+*/
+static void step4(void){
+  #ifndef NO_DEBUG
+  int cpt = 0;
+  #endif
   DEBUG("c Step 4 :\n");
   for(int i1 = 1; i1 <= graph_size; ++i1)
     for(int i2 = 1; i2 <= graph_size; ++i2)
@@ -109,14 +137,21 @@ static void compute_cnf(void){
         for(int j = 0; j < k; ++j)
           printf("%d %d ", X(i1,j), X(i2,j));
 	printf("0\n");
-#ifndef NO_DEBUG
+        #ifndef NO_DEBUG
 	++cpt;
-#endif
+        #endif
       }
-  DEBUG("c%d\n", cpt);
+  DEBUG("c %d\n", cpt);
+}
+
+static void compute_cnf(void){
+  step1();
+  step2();
+  step3();
+  step4();
 }
   
-  static void usage(char *name){
+static void usage(char *name){
   fprintf(stderr, "Usage : %s k\nWith k >= 1\n", name);
   exit(EXIT_FAILURE);
 }
