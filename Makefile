@@ -1,5 +1,10 @@
 CC=gcc
-CFLAGS=-Wall -Werror -std=c99 -DNO_DEBUG -c
+CFLAGS=-Wall -Werror -std=c99 -c
+ifeq ($(DEBUG), yes)
+	CFLAGS+= -g
+else
+	CFLAGS+= -DNO_DEBUG -O2
+endif
 GRAPHFILES=K5_5.c K7_11.c C10.c C10a2.c C10a3.c Petersen.c
 MAINFILE=cov2sat.c
 OUTFILES=$(GRAPHFILES:.c=.out)
