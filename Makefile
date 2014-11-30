@@ -5,8 +5,10 @@ ifeq ($(DEBUG), yes)
 else
 	CFLAGS+= -DNO_DEBUG -O2
 endif
-GRAPHFILES=K5_5.c K7_11.c C10.c C10a2.c C10a3.c Petersen.c
+EASY_GRAPHFILES= K5_5.c K7_11.c C10.c C10a2.c C10a3.c Petersen.c sierp23.c
+GRAPHFILES=$(EASY_GRAPHFILES) kn62.c sierp33.c
 MAINFILE=cov2sat.c
+EASY_OUTFILES=$(EASY_GRAPHFILES:.c=.out)
 OUTFILES=$(GRAPHFILES:.c=.out)
 
 .PHONY: all run clean mrproper
@@ -22,7 +24,7 @@ all: $(OUTFILES)
 	$(CC) $(CFLAGS) $^
 
 run: all
-	@for i in $(OUTFILES) ; do echo "- $$i" && ./solver.sh ./$$i ; done
+	@for i in $(EASY_OUTFILES) ; do echo "- $$i" && ./solver.sh ./$$i ; done
 
 clean:
 	$(RM) *.o
