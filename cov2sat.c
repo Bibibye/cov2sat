@@ -29,12 +29,11 @@ static void compute_header(void){
 	++nb_edges;
   nb_edges /= 2;
   int step1 = k;
-  int step2 = (k * (k-1) * graph_size);
-  int step3 = (graph_size * (graph_size - 1)) * k;
-  int step4 = nb_edges*2;
-  int nb_clauses = step1 + step2 + step3 + step4;
-  DEBUG("c nb_edges : %d\nc 1->%d, 2->%d, 3->%d, 4->%d", 
-	nb_edges, step1, step2, step3, step4);
+  int step2 = (graph_size * (graph_size - 1)) * k;
+  int step3 = nb_edges*2;
+  int nb_clauses = step1 + step2 + step3;
+  DEBUG("c nb_edges : %d\nc 1->%d, 2->%d, 3->%d", 
+	nb_edges, step1, step2, step3);
   DEBUG("c Header :\n");
   printf("p cnf %d %d\n", nb_vars, nb_clauses);
 }
@@ -64,34 +63,6 @@ static void step1(void){
 }
 
 /*
-  There must be at most one positive variable for each i :
-     -X(1,1) \/ -X(1,2)
-  /\ -X(1,2) \/ -X(1,3)
-  /\ ...
-  /\ -X(1,k-1) \/ -X(1,k)
-  /\ -X(2,1) \/ -X(2,2)
-  /\ ...
-  /\ -X(graph_size,k-1) \/ -X(graph_size,k)
-*/
-static void step2(void){
-  #ifndef NO_DEBUG
-  int cpt = 0;
-  #endif
-  DEBUG("c Step 2 :\n");
-  for(int i = 1; i <= graph_size; ++i){
-    for(int j1 = 0; j1 < k; ++j1)
-      for(int j2 = 0; j2 < k; ++j2)
-	if(j1 != j2){
-    	  printf("%d %d 0\n", -X(i,j1), -X(i,j2));
-          #ifndef NO_DEBUG
-	  ++cpt;
-          #endif
-        }
-  }
-  DEBUG("c %d\n", cpt);
-}
-
-/*
   There must be at most one positive variable for each j :
      -X(1,1) \/ -X(2,1)
   /\ -X(2,1) \/ -X(3,1)
@@ -101,7 +72,7 @@ static void step2(void){
   /\ ...
   /\ -X(graph_size-1,k) \/ -X(graph_size,k)    
 */
-static void step3(void){
+static void step2(void){
   #ifndef NO_DEBUG
   int cpt = 0;
   #endif
@@ -126,7 +97,7 @@ static void step3(void){
   /\ X(A',1) \/ X(B',1) \/ ...
   /\ ...
 */
-static void step4(void){
+static void step3(void){
   #ifndef NO_DEBUG
   int cpt = 0;
   #endif
@@ -148,7 +119,6 @@ static void compute_cnf(void){
   step1();
   step2();
   step3();
-  step4();
 }
   
 static void usage(char *name){
