@@ -24,7 +24,7 @@ all: $(OUTFILES)
 	$(CC) $(CFLAGS) $^
 
 run: all
-	@for i in $(EASY_OUTFILES) ; do echo "- $$i" && ./solver.sh ./$$i ; done
+	@for i in $(EASY_OUTFILES) ; do echo -n "- $$i : " && ./solver.sh ./$$i ; done
 
 clean:
 	$(RM) *.o

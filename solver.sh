@@ -22,6 +22,6 @@ do
     fi
 done
 
-echo "The minimal vertex cover contains $i vertices."
+echo "$i"
 
 rm *.sat *.result
