@@ -29,6 +29,7 @@ run: all
 clean:
 	$(RM) *.o
 	$(RM) *~
+	$(RM) \#*
 
 mrproper: clean
 	$(RM) $(OUTFILES)
