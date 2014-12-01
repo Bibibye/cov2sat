@@ -30,7 +30,7 @@ static void compute_header(void){
   nb_edges /= 2;
   int step1 = k;
   int step2 = (graph_size * (graph_size - 1)) * k;
-  int step3 = nb_edges*2;
+  int step3 = nb_edges;
   int nb_clauses = step1 + step2 + step3;
   DEBUG("c nb_edges : %d\nc 1->%d, 2->%d, 3->%d", 
 	nb_edges, step1, step2, step3);
@@ -76,7 +76,7 @@ static void step2(void){
   #ifndef NO_DEBUG
   int cpt = 0;
   #endif
-  DEBUG("c Step 3 :\n");
+  DEBUG("c Step 2 :\n");
   for(int j = 0; j < k; ++j){
     for(int i1 = 1; i1 <= graph_size; ++i1)
       for(int i2 = 1; i2 <= graph_size; ++i2)
@@ -101,10 +101,10 @@ static void step3(void){
   #ifndef NO_DEBUG
   int cpt = 0;
   #endif
-  DEBUG("c Step 4 :\n");
-  for(int i1 = 1; i1 <= graph_size; ++i1)
-    for(int i2 = 1; i2 <= graph_size; ++i2)
-      if(i1 != i2 && is_adjacent(i1, i2)){
+  DEBUG("c Step 3 :\n");
+  for(int i1 = 2; i1 <= graph_size; ++i1)
+    for(int i2 = 1; i2 < i1; ++i2)
+      if(is_adjacent(i1, i2)){
         for(int j = 0; j < k; ++j)
           printf("%d %d ", X(i1,j), X(i2,j));
 	printf("0\n");
